@@ -72,7 +72,7 @@ public:
   }
 
   // function that computes the optimum number of cores
-  virtual unsigned optimize() = 0;
+  virtual unsigned optimize(const bool no_ml) = 0;
 
   double get_deadline() const { return deadline;}
   virtual double get_alpha() const { return alphain;}

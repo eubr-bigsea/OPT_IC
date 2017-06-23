@@ -42,10 +42,10 @@ namespace create_object
   CommandLineOptions parse_command_line(int argc, char** argv);
 
 	// this is the function that starts any kind of optimization (simple, fast, fast-bisection)
-	unsigned start_optimization(Abstract_optimization& opt);
+  unsigned start_optimization(Abstract_optimization& opt, bool no_ml);
 
 	// this function creates an object of Fast/Fast_Bisection_optimization and starts the optimization
-	void create_obj(const OptimizeMethod& optimize_method, Application& app);
+  void create_obj(const OptimizeMethod& optimize_method, Application& app, bool no_ml);
 }
 
 #endif

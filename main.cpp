@@ -30,7 +30,8 @@ int main(int argc, char** argv)
   app = c_app::create_app(cmd_options.name_of_file);
 
   // we create on object with the method and run it
-  create_object::create_obj(cmd_options.optimize_method, app);
+  create_object::create_obj(cmd_options.optimize_method, app,
+                            cmd_options.no_ml);
 
   return 0;
 }

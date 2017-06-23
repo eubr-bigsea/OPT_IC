@@ -39,7 +39,7 @@ void Fast_optimization::set_alpha_beta(const unsigned n1, const unsigned n2, con
   }
 }
 
-unsigned Fast_optimization::optimize()
+unsigned Fast_optimization::optimize(const bool no_ml)
 {
   std::cout << "---------------------------------------------------------------" << std::endl;
   std::cout << "\nStarting fast optimization - deadline: " << deadline << " ms\n" << std::endl;
@@ -67,12 +67,11 @@ unsigned Fast_optimization::optimize()
 
   // we evaluate the nu computed with the initial alpha and beta and then we assign
   // it nu numin or numax
-  unsigned nu_old = get_nu(alphain, betain);
+  unsigned nu = (no_ml == true ? get_nu(alphain, betain)
+                               : mlm.initial_core_numbers(ic, deadline));
 
-
-    unsigned nu = mlm.initial_core_numbers(ic,deadline);
   help::time_instant t = evaluate_time(nu);
-    std::cout << "Ncores (alpha & beta) = " << nu_old << " -> time = " << t << " ms"<< std::endl;
+    std::cout << "Ncores (alpha & beta) = " << nu << " -> time = " << t << " ms"<< std::endl;
   std::cout << "Ncores = " << nu << " -> time = " << t << " ms"<< std::endl;
   assigne_nu_time(nu,t);
 

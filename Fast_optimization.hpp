@@ -59,7 +59,7 @@ public:
     : Abstract_optimization(app), alpha(alphain), beta(betain), numax(max_n_cores) {}
 
   // function that computes the optimum numer of VM
-  unsigned optimize() override;
+  unsigned optimize(const bool no_ml) override;
 
   double get_alpha() const override { return alpha;}
   double get_beta() const override { return beta;}

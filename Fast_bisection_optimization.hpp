@@ -32,7 +32,7 @@ public:
   Fast_bisection_optimization(Application& app): Fast_optimization(app) {}
 
   // function that computes the optimum numer of VM
-  unsigned optimize() override;
+  unsigned optimize(const bool no_ml) override;
 
 };
 

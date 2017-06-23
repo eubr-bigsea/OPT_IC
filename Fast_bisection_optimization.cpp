@@ -17,7 +17,7 @@ limitations under the License.
 
 #include "Fast_bisection_optimization.hpp"
 
-unsigned Fast_bisection_optimization::optimize()
+unsigned Fast_bisection_optimization::optimize(const bool no_ml)
 {
   std::cout << "---------------------------------------------------------------" << std::endl;
   std::cout << "\nStarting fast optimization with bisection - deadline: " << deadline << " ms\n" << std::endl;

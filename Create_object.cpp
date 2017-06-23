@@ -19,18 +19,18 @@ limitations under the License.
 #include <string>
 #include "Create_object.hpp"
 
-unsigned create_object::start_optimization(Abstract_optimization& opt)
+unsigned create_object::start_optimization(Abstract_optimization& opt, bool no_ml)
 {
 	// the optimization function runs and the elapsed time is measured
 	time_meas::t_point start = std::chrono::system_clock::now();
-	unsigned nu = opt.optimize();
+	unsigned nu = opt.optimize(no_ml);
 	time_meas::t_point finish = std::chrono::system_clock::now();
 	time_meas::t_consumption(start, finish);
 	return nu;
 }
 
 void create_object::create_obj(const OptimizeMethod& optimize_method,
-                               Application& app) {
+                               Application& app, bool no_ml) {
   // variables that will contain the results of the optimization
   unsigned nuf = 0;
   unsigned nub = 0;
@@ -42,7 +42,7 @@ void create_object::create_obj(const OptimizeMethod& optimize_method,
 
   if (optimize_method == OptimizeMethod::FAST_OPTIMIZATION) {
     Fast_optimization opt(app);
-    nuf = start_optimization(opt);
+    nuf = start_optimization(opt, no_ml);
     std::cout << "\nOptimum Ncores using fast optimization: " << nuf
               << std::endl;
     std::cout << "Iterations using fast optimization: " << opt.get_it() << '\n'
@@ -53,7 +53,7 @@ void create_object::create_obj(const OptimizeMethod& optimize_method,
               << std::endl;
   } else if (optimize_method == OptimizeMethod::FAST_BISECT_OPTIMIZATION) {
     Fast_bisection_optimization opt(app);
-    nub = start_optimization(opt);
+    nub = start_optimization(opt, no_ml);
     std::cout
         << "\nOptimum Ncores with using fast optimization with bisection: "
         << nub << std::endl;
