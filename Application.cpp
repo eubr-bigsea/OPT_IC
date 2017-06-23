@@ -15,6 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include <cassert>
+#include <utility>
 #include "Application.hpp"
 
 void Application::set_id(const std::string& id)
@@ -22,14 +24,16 @@ void Application::set_id(const std::string& id)
   id_application = id;
 }
 
-void Application::add_job(Job j)
+void Application::add_job(help::id_type job_id, Job j)
 {
-  jobs.push_back(j);
+  assert(job_id == j.get_ID());
+  jobs.insert(std::make_pair(job_id, j));
 }
 
-void Application::add_stage(Stage s)
+void Application::add_stage(help::id_type stage_id, Stage s)
 {
-  stages.push_back(s);
+  assert(stage_id == s.get_ID());
+  stages.insert(std::make_pair(stage_id, s));
 }
 
 help::time_instant Application::execution_time_avg() const
@@ -37,8 +41,9 @@ help::time_instant Application::execution_time_avg() const
   //return the approximate execution time_instant
   //this method uses the following formula: sum of wave * stage average time
   help::time_instant sum = 0;
-  for(auto s : stages)
+  for(auto& pair : stages)
   {
+    const auto& s = pair.second;
     if(s.get_n_tasks() % n_core != 0)
       sum += s.get_avg();
 
@@ -53,8 +58,9 @@ help::time_instant Application::execution_time_avg(unsigned int n) const
   //return the approximate execution time_instant
   //this method uses the following formula: sum of wave * stage average time
   help::time_instant sum = 0;
-  for(auto s : stages)
+  for(auto& pair : stages)
   {
+    const auto& s = pair.second;
     if(s.get_n_tasks() % n != 0)
       sum += s.get_avg();
 
@@ -73,15 +79,19 @@ void Application::print() const
 void Application::print_job() const
 {
   print();
-  for(auto j : jobs)
-      j.print();
+  for(auto& pair : jobs) {
+    const auto& j = pair.second;
+    j.print();
+  }
 }
 
 void Application::print_stage() const
 {
   print();
-  for(auto s : stages)
+  for(auto& pair : stages) {
+    const auto& s = pair.second;
     s.prints();
+  }
 }
 
 Application& Application::operator=(const Application& app)
@@ -128,8 +138,10 @@ void Application::set_alpha_beta(unsigned int n1, unsigned int n2)
 unsigned int Application::get_n_tasks() const
 {
   unsigned int temp = 0;
-  for(auto s : stages)
+  for(auto& pair : stages) {
+    const auto& s = pair.second;
     temp += s.get_n_tasks();
+  }
 
   return temp;
 }
@@ -137,9 +149,11 @@ unsigned int Application::get_n_tasks() const
 unsigned Application::get_max_tasks() const
 {
   unsigned max = 0;
-  for(auto s : stages)
+  for(auto& pair : stages) {
+    const auto& s = pair.second;
     if(s.get_n_tasks() > max)
       max = s.get_n_tasks();
+  }
       
   return max;
 }

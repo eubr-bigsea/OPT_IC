@@ -28,12 +28,13 @@ limitations under the License.
 #include <vector>
 #include <string>
 #include <iostream>
+#include <map>
 
 class Application
 {
   std::string id_application;
-  std::vector<Job> jobs;
-  std::vector<Stage> stages;
+  std::map<help::id_type, Job> jobs;
+  std::map<help::id_type, Stage> stages;
 
   std::string lua_name;
 
@@ -54,13 +55,13 @@ class Application
 public:
   Application() = default;
 
-  std::vector<Stage>& modify_stages() {return stages;}
-  const std::vector<Stage>& get_stages() const {return stages;}
-  const std::vector<Job>& get_jobs() const {return jobs;}
+  std::map<help::id_type, Stage>& modify_stages() {return stages;}
+  const std::map<help::id_type, Stage>& get_stages() const {return stages;}
+  const std::map<help::id_type, Job>& get_jobs() const {return jobs;}
   unsigned int get_n_core() const {return n_core;}
 
-  void add_job(Job);
-  void add_stage(Stage);
+  void add_job(help::id_type, Job);
+  void add_stage(help::id_type, Stage);
 
   unsigned int get_num_stages() const {return stages.size();}
   help::time_instant get_submission_time() const {return submission_time;}

@@ -147,7 +147,7 @@ Application c_app::create_app(const std::string& name_of_file) {
 
     job_temp.set_id_stages(id_stages.find(job_id)->second);
 
-    app.add_job(std::move(job_temp));
+    app.add_job(job_id, std::move(job_temp));
   }  // for all submission times
 
 
@@ -182,7 +182,7 @@ Application c_app::create_app(const std::string& name_of_file) {
       }
     }
     stage_temp.set_dependencies(parentIDs);
-    app.add_stage(std::move(stage_temp));
+    app.add_stage(stage_id, std::move(stage_temp));
   }  // for each row in stages file
 
   // Parse the tasks file
@@ -207,10 +207,10 @@ Application c_app::create_app(const std::string& name_of_file) {
 
   // Update stages of application with the max min a avg task
   for (auto& stage : app.modify_stages()) {
-    const auto stage_id = stage.get_ID();
-    stage.set_max(stage2tasks.at(stage_id));
-    stage.set_min(stage2tasks.at(stage_id));
-    stage.set_avg(stage2tasks.at(stage_id));
+    const auto stage_id = stage.first;
+    stage.second.set_max(stage2tasks.at(stage_id));
+    stage.second.set_min(stage2tasks.at(stage_id));
+    stage.second.set_avg(stage2tasks.at(stage_id));
   }
 
   // Read the configuration file
