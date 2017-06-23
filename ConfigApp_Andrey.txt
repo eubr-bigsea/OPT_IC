@@ -1,0 +1,2 @@
+#app_id w  chi_0  chi_c  M  m  V  v  D
+appAndrey 0.11 0.12 0.13 4 4 2 2 180000

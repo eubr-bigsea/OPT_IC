@@ -1,4 +1,4 @@
-CXXFLAGS += -Wall -std=c++11 -g
+CXXFLAGS += -Wall -std=c++11
 OBJS = main.o Job.o Application.o Stage.o Helper.o Create_application.o \
 			Fast_optimization.o Abstract_optimization.o Time_meas.o \
 			Fast_bisection_optimization.o Create_object.o InfrastructureConfiguration.o \

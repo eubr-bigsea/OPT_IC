@@ -1,20 +1,3 @@
-/*
-Copyright 2017 Andrea Vescovini
-Copyright 2017 Sara Zaninelli
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 #include "Fast_optimization.hpp"
 
 void Fast_optimization::set_alpha_beta(const unsigned n1, const unsigned n2, const help::time_instant r1, const help::time_instant r2)
@@ -39,7 +22,7 @@ void Fast_optimization::set_alpha_beta(const unsigned n1, const unsigned n2, con
   }
 }
 
-unsigned Fast_optimization::optimize(const bool no_ml)
+unsigned Fast_optimization::optimize()
 {
   std::cout << "---------------------------------------------------------------" << std::endl;
   std::cout << "\nStarting fast optimization - deadline: " << deadline << " ms\n" << std::endl;
@@ -67,11 +50,12 @@ unsigned Fast_optimization::optimize(const bool no_ml)
 
   // we evaluate the nu computed with the initial alpha and beta and then we assign
   // it nu numin or numax
-  unsigned nu = (no_ml == true ? get_nu(alphain, betain)
-                               : mlm.initial_core_numbers(ic, deadline));
+  unsigned nu_old = get_nu(alphain, betain);
 
+
+    unsigned nu = mlm.initial_core_numbers(ic,deadline);
   help::time_instant t = evaluate_time(nu);
-    std::cout << "Ncores (alpha & beta) = " << nu << " -> time = " << t << " ms"<< std::endl;
+    std::cout << "Ncores (alpha & beta) = " << nu_old << " -> time = " << t << " ms"<< std::endl;
   std::cout << "Ncores = " << nu << " -> time = " << t << " ms"<< std::endl;
   assigne_nu_time(nu,t);
 

@@ -1,20 +1,3 @@
-/*
-Copyright 2017 Andrea Vescovini
-Copyright 2017 Sara Zaninelli
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 #ifndef _APPLICATION_HPP_
 #define _APPLICATION_HPP_
 
@@ -28,13 +11,12 @@ limitations under the License.
 #include <vector>
 #include <string>
 #include <iostream>
-#include <map>
 
 class Application
 {
   std::string id_application;
-  std::map<help::id_type, Job> jobs;
-  std::map<help::id_type, Stage> stages;
+  std::vector<Job> jobs;
+  std::vector<Stage> stages;
 
   std::string lua_name;
 
@@ -55,13 +37,13 @@ class Application
 public:
   Application() = default;
 
-  std::map<help::id_type, Stage>& modify_stages() {return stages;}
-  const std::map<help::id_type, Stage>& get_stages() const {return stages;}
-  const std::map<help::id_type, Job>& get_jobs() const {return jobs;}
+  std::vector<Stage>& modify_stages() {return stages;}
+  const std::vector<Stage>& get_stages() const {return stages;}
+  const std::vector<Job>& get_jobs() const {return jobs;}
   unsigned int get_n_core() const {return n_core;}
 
-  void add_job(help::id_type, Job);
-  void add_stage(help::id_type, Stage);
+  void add_job(Job);
+  void add_stage(Stage);
 
   unsigned int get_num_stages() const {return stages.size();}
   help::time_instant get_submission_time() const {return submission_time;}

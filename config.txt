@@ -1,3 +1,4 @@
 ./data/
 ./Dagsim/
 ./lua/
+ConfigApp.csv

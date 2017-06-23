@@ -1,52 +1,21 @@
-/*
-Copyright 2017 Andrea Vescovini
-Copyright 2017 Sara Zaninelli
-Copyright 2017 Biagio Festa <biagio.festa@gmail.com>
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
-#include <utility>
 #include "Create_application.hpp"
-#include "Job.hpp"
 
-Application c_app::create_app(const std::string& name_of_file) {
+Application c_app::create_app(const std::string& name_of_file)
+{
   Application app;
 
   // the file name_of_file is open and read
   std::ifstream ifs{name_of_file};
-  if (!ifs) {
+  if(!ifs)
+  {
     std::cerr << '\n' << name_of_file << " not found!" << std::endl;
-    exit(-1);
+    return app;
   }
 
-  // Read the line of the file in order to get all app informations
-  std::string file_line;
-
-  getline(ifs, file_line);
-
-  // Tokenize the line and get app information in raw strings
-  std::istringstream iss(file_line);
-  std::string ap, job, st, taskk, lua, infr_config;
-  std::string deadline_str;
-  iss >> ap >> job >> st >> taskk >> lua >> infr_config >> deadline_str;
-
-  if (deadline_str.empty()) {
-    std::cerr << '\n'
-              << "The file '" << name_of_file
-              << "' does not contain all informations\n";
-    exit(-1);
-  }
+  std::string ap, job, st, taskk, line, deadline, lua, infr_config;
+  getline(ifs, line);
+  std::istringstream iss(line);
+  iss >> ap >> job >> st >> taskk >> lua >> infr_config >> deadline;
 
   // we add the path of the correct directories
   help::add_data_dir(ap);
@@ -56,202 +25,166 @@ Application c_app::create_app(const std::string& name_of_file) {
   help::add_data_dir(infr_config);
   help::add_lua_dir(lua);
 
-  // Parse deadline string into number
-  const auto deadline = std::stoul(deadline_str);
+  std::vector<std::string> file_names;
+  file_names.push_back(ap);
+  file_names.push_back(job);
+  file_names.push_back(st);
+  file_names.push_back(taskk);
+  file_names.push_back(infr_config);
+  file_names.push_back(deadline);
 
-  // Construct a map with all needed filepaths
-  std::map<std::string, std::string> file2filename;
-  file2filename["application_file"] = std::move(ap);
-  file2filename["jobs_file"] = std::move(job);
-  file2filename["stages_file"] = std::move(st);
-  file2filename["tasks_file"] = std::move(taskk);
-  file2filename["lua_file"] = std::move(lua);
-  file2filename["configuration_file"] = std::move(infr_config);
+  // we set the data about the app
+  typedef std::vector<std::vector<std::string>> read_type;
+  read_type temp;
 
-  // Read type is a matrix of string
-  // This type is useful in order to read and parse files as CSV
-  using read_type = std::vector<std::vector<std::string>>;
+  const std::string& file_name = file_names[0];
+  help::create_vector(file_name, temp);
 
-  // Set some informations in the application object
-  app.set_lua_name(file2filename.at("lua_file"));
+  app.set_lua_name(lua);
+  app.set_id(temp[1][0]);
   app.set_submission_time(0);
-  app.set_infr_config_name(file2filename.at("configuration_file"));
-  app.set_deadline(deadline);
+  app.set_infr_config_name(infr_config);
+  app.set_deadline(std::stoul(file_names[5]));
   app.set_n_core(1);
-
-  // Parse the application file
-  read_type reader_appfile;
-  help::create_vector(file2filename.at("application_file"), reader_appfile);
-
-  // Set the application id as the second row, first column of applicaton file
-  const auto application_id = reader_appfile.at(1).at(0);
-  app.set_id(application_id);
-
-  // Get the duration of application as time different and set in app object
-  const auto app_time_start = std::stoul(reader_appfile.at(1).at(1));
-  const auto app_time_stop = std::stoul(reader_appfile.at(2).at(1));
-  help::time_instant ret = app_time_stop - app_time_start;
+  help::time_instant ret = std::stoul(temp[2][1]) - std::stoul(temp[1][1]);
   app.set_real_execution_time(ret);
 
-  // Parse the jobs file
-  read_type jobsfile_data;
-  help::create_vector(file2filename.at("jobs_file"), jobsfile_data);
-
-  // Well-organized data structure from jobs file
+  // we set the data about the jobs
   std::map<help::id_type, unsigned long int> sub_time, compl_time;
-
-  // Map each job id with a vector of stages IDs
   std::map<help::id_type, std::vector<help::id_type> > id_stages;
 
-  // Fill the data structures of jobs file (for each row in jobs file)
-  for (unsigned row_index = 1; row_index < jobsfile_data.size(); ++row_index) {
-    // Get the current row
-    const auto& row = jobsfile_data.at(row_index);
+  read_type temp1;
+  help::create_vector(file_names[1], temp1);
 
-    const unsigned number_of_cols = row.size();
+  help::id_type id;
+  unsigned long int sub, comp;
 
-    // Get the job id at the current row
-    const help::id_type job_id = std::stoi(row.at(0));
+  for(unsigned i = 1; i < temp1.size(); i++)
+  {
+    unsigned sz = temp1[i].size();
+    id = std::atoi(temp1[i][0].c_str());
 
-    // Get the submission_time
-    const auto& submission_time_str = row.at(1);
-    if (submission_time_str != "NOVAL") {
-      const auto submission_time = std::stoul(submission_time_str);
-      sub_time.insert(std::make_pair(job_id, submission_time));
+    if(temp1[i][1] != "NOVAL")
+    {
+      sub = std::stoul(temp1[i][1]);
+      sub_time.insert({id, sub});
     }
 
-    // Get the completion time (as last field in row)
-    const auto& completion_time_str = row.at(number_of_cols - 1);
-    if (completion_time_str != "NOVAL") {
-      const auto completion_time = std::stoul(completion_time_str);
-      compl_time.insert(std::make_pair(job_id, completion_time));
+    if (temp1[i][sz - 1] != "NOVAL")
+    {
+     // auto tempDanilo = temp1[i][sz - 1];
+      comp = std::stoul(temp1[i][sz - 1]);
+      compl_time.insert({id, comp});
     }
 
-    // Get the stage dependency of the job
-    std::vector<help::id_type> stageIDs;
-    for (unsigned col_index = 2; col_index < number_of_cols - 1; ++col_index) {
-      auto col = row.at(col_index);
-      auto stage_id = help::read_id(col);
-      stageIDs.push_back(std::move(stage_id));
-    }
-    id_stages.insert(std::make_pair(job_id, std::move(stageIDs)));
-  }  // for all row in jobs file
+    std::vector<help::id_type> vec;
+    for(unsigned j = 2; j < sz - 1; j++)
+      vec.push_back(help::read_id(temp1[i][j]));
 
-  // Insert all jobs into the application object
-  for (const auto& it : sub_time) {
-    const auto& job_id = it.first;
-    Job job_temp(job_id,                            // job id
-                 application_id,                    // application id
-                 it.second,                         // sub time
-                 compl_time.find(job_id)->second);  // completion time
-
-    job_temp.set_id_stages(id_stages.find(job_id)->second);
-
-    app.add_job(job_id, std::move(job_temp));
-  }  // for all submission times
-
-
-  // Parse the stages file
-  read_type stagesfile_data;
-  help::create_vector(file2filename.at("stages_file"), stagesfile_data);
-
-  // Fill the data structures of stages file (for each row in stages file)
-  for (unsigned row_index = 1; row_index < stagesfile_data.size();
-       ++row_index) {
-    // Get the current row
-    const auto& row = stagesfile_data.at(row_index);
-    const auto number_of_cols = row.size();
-
-    // Get the stage id at the current row
-    const help::id_type stage_id = std::stoi(row.at(0));
-
-    const unsigned number_of_tasks = std::stoi(row.at(3));
-
-    // Create stage object
-    Stage stage_temp(stage_id, number_of_tasks);
-
-    // Parse stage dependencies
-    std::vector<help::id_type> parentIDs;
-    const auto& parents_str = row.at(2);
-    if (!help::check_empty(parents_str)) {
-      for (unsigned col_index = 2; col_index < number_of_cols - 3;
-           ++col_index) {
-        auto col = row.at(col_index);
-        auto parent_id = help::read_id(col);
-        parentIDs.push_back(std::move(parent_id));
-      }
-    }
-    stage_temp.set_dependencies(parentIDs);
-    app.add_stage(stage_id, std::move(stage_temp));
-  }  // for each row in stages file
-
-  // Parse the tasks file
-  read_type tasksfile_data;
-  help::create_vector(file2filename.at("tasks_file"), tasksfile_data);
-
-  // Map a ID stage with a execution times of stage2tasks
-  std::map<help::id_type,std::vector<help::time_instant>> stage2tasks;
-
-  // Fill the data structures of task file (for each row in task file)
-  for (unsigned row_index = 1; row_index < tasksfile_data.size(); ++row_index) {
-    // Get the current row
-    const auto& row = tasksfile_data.at(row_index);
-
-    // Get task information
-    const unsigned long launch_time = std::stoul(row.at(4));
-    const unsigned long finish_time = std::stoul(row.at(5));
-    const help::id_type id_stage = std::stoi(row.at(16));
-    const auto execution_time = finish_time - launch_time;
-    stage2tasks[id_stage].push_back(execution_time);
+    id_stages.insert({id, vec});
   }
 
-  // Update stages of application with the max min a avg task
-  for (auto& stage : app.modify_stages()) {
-    const auto stage_id = stage.first;
-    stage.second.set_max(stage2tasks.at(stage_id));
-    stage.second.set_min(stage2tasks.at(stage_id));
-    stage.second.set_avg(stage2tasks.at(stage_id));
+  for(auto it : sub_time)
+  {
+    Job job_temp(it.first, temp[1][0],  it.second, compl_time.find(it.first)->second);
+    job_temp.set_id_stages(id_stages.find(it.first)->second);
+    app.add_job(job_temp);
   }
 
-  // Read the configuration file
-  std::ifstream ifs_config{file2filename.at("configuration_file")};
-  if(!ifs_config) {
-    std::cerr << '\n' << file2filename.at("configuration_file")
-              << " not found!" << std::endl;
+  // we set the data about stages
+  read_type temp2;
+  help::create_vector(file_names[2], temp2);
+
+  unsigned int task;
+  for (unsigned i = 1; i < temp2.size(); i++)
+  {
+    unsigned sz = temp2[i].size();
+    id = std::atoi(temp2[i][0].c_str());
+    task = std::atoi(temp2[i][3].c_str());
+    Stage stage_temp(id, task);
+    std::vector<help::id_type> vec;
+
+    if(!help::check_empty(temp2[i][2]))
+      for(unsigned j = 2; j < sz-3; j++)
+        vec.push_back(help::read_id(temp2[i][j]));
+
+    stage_temp.set_dependencies(vec);
+    app.add_stage(stage_temp);
+  }
+
+  // we set the data about the stasks
+  help::time_instant diff;
+  unsigned long int launch, finish;
+  help::id_type id_stage;
+  read_type temp3;
+
+    // Trasformare in mappa di vector di time instant
+  //std::vector<std::vector<Job::time_instant>> tasks(app.get_num_stages());
+    std::map<help::id_type,std::vector<help::time_instant>>tasks;
+  help::create_vector(file_names[3], temp3);
+
+  for(unsigned i = 1; i < temp3.size(); i++)
+  {
+   /* if (i==25770){
+      std::cout<< '\n' << temp3[i][4]<<std::endl;
+      std::cout<< temp3[i][5]<<std::endl;
+      std::cout<< std::atoi(temp3[i][16].c_str())<<std::endl;
+      std::cout<< temp3.size() <<std::endl;
+      std::cout<< tasks.size() <<std::endl;
+
+    }*/
+    launch = std::stoul(temp3[i][4]);
+    finish = std::stoul(temp3[i][5]);
+    id_stage = std::atoi(temp3[i][16].c_str());
+    diff =  finish - launch;
+    tasks[id_stage].push_back(diff);
+  }
+
+  for(auto i = app.modify_stages().begin(); i != app.modify_stages().end(); i++)
+  {
+    unsigned n = i->get_ID();
+    i->set_max(tasks[n]);
+    i->set_min(tasks[n]);
+    i->set_avg(tasks[n]);
+  }
+
+  // Read configuration file
+
+  std::ifstream ifs_config{file_names[4]};
+
+  if(!ifs_config)
+  {
+    std::cerr << '\n' << file_names[4] << " not found!" << std::endl;
     return app;
   }
 
-  // Read the second line (skip the first line -header-)
-  std::string configfile_line;
-  getline(ifs_config, configfile_line);
-  getline(ifs_config, configfile_line);
 
-  // Parse the line saving parameters
-  std::istringstream iss_config(configfile_line);
-  std::string app_id, chi_0, chi_c, container_memory, executor_memory,
-      container_cores, executor_cores;
-  iss_config >> app_id >> chi_0 >> chi_c >> container_memory >>
-      executor_memory >> container_cores >> executor_cores;
+  getline(ifs_config, line);
+  getline(ifs_config, line);
+  std::istringstream iss_config(line);
+  std::string app_id, chi_0, chi_c, container_memory, executor_memory, container_cores, executor_cores;
+  iss_config >> app_id >> chi_0 >> chi_c >> container_memory >> executor_memory >> container_cores >> executor_cores;
 
-  // Print on the standard output
   std::cout << '\n' << " Optimizing configuration" << std::endl;
-  std::cout << app_id << " "
-            << " " << chi_0 << " " << chi_c << " " << container_memory << " "
-            << executor_memory << " " << container_cores << " "
-            << executor_cores;
+  std::cout << app_id << " " << " " << chi_0 << " "
+            << chi_c << " " << container_memory << " "
+            << executor_memory << " "<< container_cores << " " << executor_cores;
 
-  InfrastructureConfiguration ic(std::stof(container_memory),
-                                 std::stof(executor_memory),
-                                 std::stoul(container_cores),
-                                 std::stoul(executor_cores));
 
-  MachineLearningModel mlm(std::stof(chi_0), std::stof(chi_c));
+  InfrastructureConfiguration ic(atof(container_memory.c_str()) , atof(executor_memory.c_str()), atoi(container_cores.c_str()), atoi(executor_cores.c_str()));
 
-  // Set infrastructure configuraiton and ML into the application object
+  //ic.print();
+
+    MachineLearningModel mlm(atof(chi_0.c_str()), atof(chi_c.c_str()));
+
   app.set_infr_config(ic);
-  app.set_mlm(mlm);
+    app.set_mlm(mlm);
 
-  mlm.print();
+
+    mlm.print();
+
+  //app.get_infr_config().print();
+
 
   return app;
 }

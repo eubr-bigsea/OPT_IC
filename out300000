@@ -1,0 +1,30 @@
+
+ Debug Danilo
+q52 -1.03e5 8.72e6 28 8 4 2  300000
+ Debug Danilo
+
+8.72e+06 28
+---------------------------------------------------------------
+
+Starting fast optimization - deadline: 300000 ms
+
+
+Initial cores number: 2
+Ncores (alpha & beta) = 45 -> time = 3998407 ms
+Ncores = 2 -> time = 3998407 ms
+Ncores = 28 -> time = 296288 ms
+Ncores = 15 -> time = 542653 ms
+Ncores = 22 -> time = 373685 ms
+Ncores = 25 -> time = 330460 ms
+Ncores = 27 -> time = 306852 ms
+
+Finished computation at Thu May 18 12:28:18 2017
+Elapsed time: 6.15639 s
+
+Optimum Ncores using fast optimization: 28
+Iterations using fast optimization: 6
+
+
+8 4 2 0
+N YARN containers (VMs): 0
+

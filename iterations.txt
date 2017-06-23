@@ -1,0 +1,10 @@
+Iterations using fast optimization: 9
+Iterations using fast optimization: 8
+Iterations using fast optimization: 7
+Iterations using fast optimization: 6
+Iterations using fast optimization: 5
+Iterations using fast optimization: 5
+Iterations using fast optimization: 5
+Iterations using fast optimization: 5
+Iterations using fast optimization: 4
+Iterations using fast optimization: 4

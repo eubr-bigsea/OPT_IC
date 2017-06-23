@@ -2,7 +2,7 @@
 Stages = {{ name="S1", tasks="2", distr={type="empirical", params={samples=solver.fileToArray("/Users/ardagna/Desktop/VescoviniZaninelli/lua/testD2/S1.txt")}}, pre={}, post={"S2"}},{ name="S0", tasks="2", distr={type="empirical", params={samples=solver.fileToArray("/Users/ardagna/Desktop/VescoviniZaninelli/lua/testD2/S0.txt")}}, pre={}, post={"S2"}},{ name="S3", tasks="200", distr={type="empirical", params={samples=solver.fileToArray("/Users/ardagna/Desktop/VescoviniZaninelli/lua/testD2/S3.txt")}}, pre={"S2"}, post={}},{ name="S2", tasks="500", distr={type="empirical", params={samples=solver.fileToArray("/Users/ardagna/Desktop/VescoviniZaninelli/lua/testD2/S2.txt")}}, pre={"S1","S0"}, post={"S3"}}};
 
 -- Number of computation nodes in the system
-Nodes = 1;
+Nodes = 8;
 
 -- Number of users accessing the system
 Users = 1;

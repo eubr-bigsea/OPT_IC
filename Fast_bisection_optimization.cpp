@@ -1,23 +1,6 @@
-/*
-Copyright 2017 Andrea Vescovini
-Copyright 2017 Sara Zaninelli
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
 #include "Fast_bisection_optimization.hpp"
 
-unsigned Fast_bisection_optimization::optimize(const bool no_ml)
+unsigned Fast_bisection_optimization::optimize()
 {
   std::cout << "---------------------------------------------------------------" << std::endl;
   std::cout << "\nStarting fast optimization with bisection - deadline: " << deadline << " ms\n" << std::endl;
@@ -41,8 +24,7 @@ unsigned Fast_bisection_optimization::optimize(const bool no_ml)
     return 0;
   }
 
-  unsigned nu = (no_ml == true ? get_nu(alphain, betain)
-                 : mlm.initial_core_numbers(ic, deadline));
+  unsigned nu = get_nu(alphain, betain);
 
   // while nu isn't oscillating its time is evaluated and assigned to numax or numin,
   // if the difference between numax and numin is now one numax is returned,

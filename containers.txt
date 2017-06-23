@@ -1,0 +1,10 @@
+N YARN containers (VMs): 26
+N YARN containers (VMs): 13
+N YARN containers (VMs): 8
+N YARN containers (VMs): 6
+N YARN containers (VMs): 5
+N YARN containers (VMs): 4
+N YARN containers (VMs): 4
+N YARN containers (VMs): 3
+N YARN containers (VMs): 3
+N YARN containers (VMs): 3

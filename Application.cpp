@@ -1,22 +1,3 @@
-/*
-Copyright 2017 Andrea Vescovini
-Copyright 2017 Sara Zaninelli
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-
-#include <cassert>
-#include <utility>
 #include "Application.hpp"
 
 void Application::set_id(const std::string& id)
@@ -24,16 +5,14 @@ void Application::set_id(const std::string& id)
   id_application = id;
 }
 
-void Application::add_job(help::id_type job_id, Job j)
+void Application::add_job(Job j)
 {
-  assert(job_id == j.get_ID());
-  jobs.insert(std::make_pair(job_id, j));
+  jobs.push_back(j);
 }
 
-void Application::add_stage(help::id_type stage_id, Stage s)
+void Application::add_stage(Stage s)
 {
-  assert(stage_id == s.get_ID());
-  stages.insert(std::make_pair(stage_id, s));
+  stages.push_back(s);
 }
 
 help::time_instant Application::execution_time_avg() const
@@ -41,9 +20,8 @@ help::time_instant Application::execution_time_avg() const
   //return the approximate execution time_instant
   //this method uses the following formula: sum of wave * stage average time
   help::time_instant sum = 0;
-  for(auto& pair : stages)
+  for(auto s : stages)
   {
-    const auto& s = pair.second;
     if(s.get_n_tasks() % n_core != 0)
       sum += s.get_avg();
 
@@ -58,9 +36,8 @@ help::time_instant Application::execution_time_avg(unsigned int n) const
   //return the approximate execution time_instant
   //this method uses the following formula: sum of wave * stage average time
   help::time_instant sum = 0;
-  for(auto& pair : stages)
+  for(auto s : stages)
   {
-    const auto& s = pair.second;
     if(s.get_n_tasks() % n != 0)
       sum += s.get_avg();
 
@@ -79,19 +56,15 @@ void Application::print() const
 void Application::print_job() const
 {
   print();
-  for(auto& pair : jobs) {
-    const auto& j = pair.second;
-    j.print();
-  }
+  for(auto j : jobs)
+      j.print();
 }
 
 void Application::print_stage() const
 {
   print();
-  for(auto& pair : stages) {
-    const auto& s = pair.second;
+  for(auto s : stages)
     s.prints();
-  }
 }
 
 Application& Application::operator=(const Application& app)
@@ -138,10 +111,8 @@ void Application::set_alpha_beta(unsigned int n1, unsigned int n2)
 unsigned int Application::get_n_tasks() const
 {
   unsigned int temp = 0;
-  for(auto& pair : stages) {
-    const auto& s = pair.second;
+  for(auto s : stages)
     temp += s.get_n_tasks();
-  }
 
   return temp;
 }
@@ -149,11 +120,9 @@ unsigned int Application::get_n_tasks() const
 unsigned Application::get_max_tasks() const
 {
   unsigned max = 0;
-  for(auto& pair : stages) {
-    const auto& s = pair.second;
+  for(auto s : stages)
     if(s.get_n_tasks() > max)
       max = s.get_n_tasks();
-  }
       
   return max;
 }
