@@ -99,6 +99,8 @@ Application c_app::create_app(const std::string& name_of_file) {
 
   // Well-organized data structure from jobs file
   std::map<help::id_type, unsigned long int> sub_time, compl_time;
+
+  // Map each job id with a vector of stages IDs
   std::map<help::id_type, std::vector<help::id_type> > id_stages;
 
   // Fill the data structures of jobs file (for each row in jobs file)
