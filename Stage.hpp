@@ -40,7 +40,7 @@ public:
     void set_dependencies(const std::vector<help::id_type>& v);
 
 
-    const help::id_type get_ID() const {return id_Stage;}
+    help::id_type get_ID() const {return id_Stage;}
 
     help::time_instant get_min() const {return min;}
 
@@ -65,7 +65,6 @@ private:
     help::time_instant avg;
   unsigned int n_tasks;
   std::vector<help::id_type> dependencies;
-
 };
 
 #endif

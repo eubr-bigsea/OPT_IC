@@ -18,6 +18,7 @@ limitations under the License.
 
 #include <utility>
 #include "Create_application.hpp"
+#include "Job.hpp"
 
 Application c_app::create_app(const std::string& name_of_file) {
   Application app;
