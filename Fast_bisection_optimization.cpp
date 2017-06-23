@@ -41,7 +41,8 @@ unsigned Fast_bisection_optimization::optimize(const bool no_ml)
     return 0;
   }
 
-  unsigned nu = get_nu(alphain, betain);
+  unsigned nu = (no_ml == true ? get_nu(alphain, betain)
+                 : mlm.initial_core_numbers(ic, deadline));
 
   // while nu isn't oscillating its time is evaluated and assigned to numax or numin,
   // if the difference between numax and numin is now one numax is returned,
