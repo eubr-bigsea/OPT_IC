@@ -63,7 +63,8 @@ class Abstract_optimization {
       : deadline(app.get_deadline()),
         max_n_cores(app.compute_max_number_of_task()),
         lua_name(app.get_lua_name()),
-        dagsim_command(opt_common::get_dagsim_command(app.get_lua_name())),
+        dagsim_command(opt_common::get_dagsim_command(app.get_lua_name(),
+                                                      app.get_dagsim_path())),
         mlm(app.get_machine_learning_model()),
         ic(app.get_infrastructure_config()) {
     // we compute alpha and beta of the hyperbole using 1 and the max_n_cores

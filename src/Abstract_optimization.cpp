@@ -27,9 +27,9 @@ opt_common::TimeInstant Abstract_optimization::evaluate_time(
     unsigned nu) const {
   // we open the .lua file and we set nu in the line where it's written
   // the number of cores (nodes) to be used in the simulation
-  std::ifstream is{lua_name + ".lua"};
+  std::ifstream is(lua_name);
   if (!is) {
-    std::cerr << "Error openinig file .lua" << std::endl;
+    std::cerr << "Error openinig file " << lua_name << std::endl;
     return -1;
   }
   std::ofstream os{lua_name + "_mod.lua"};
