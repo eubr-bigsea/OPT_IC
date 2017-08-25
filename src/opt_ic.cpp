@@ -14,9 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#include <iostream>
 #include <opt_common/Application.hpp>
 #include <opt_common/CommandLineParser.hpp>
-#include <iostream>
 #include <string>
 #include "Create_object.hpp"
 
@@ -34,13 +34,18 @@ int main(int argc, char** argv) {
     std::cerr << "Command Line Parsing Error.\n"
               << "Internal Error: " << err.what() << "\n"
               << "Usage:\n"
-              << argv[0] << " input_file -(f|F|b|B) [--no-ml]\n";
+              << argv[0]
+              << " input_file -(f|F|b|B) [--no-ml] [-c CONFIG_FILE]\n";
     return -1;
   }
 
+  const std::string config_namefile =
+      (cl_options.config_file != "" ? cl_options.config_file
+                                    : DefaultConfigFile);
+
   // Create application
-  auto application = Application::create_application(
-      cl_options.name_of_file, DefaultConfigFile);
+  auto application =
+      Application::create_application(cl_options.name_of_file, config_namefile);
 
   // Create optimize method and run it
   create_object::create_obj(cl_options.optimize_method, application,
