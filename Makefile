@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-std=c++14 -Wall -g -O0
+CXXFLAGS=-std=c++14 -O3 -DNDEBUG
 CXXINCLUDES=
 TARGET=opt_ic
 

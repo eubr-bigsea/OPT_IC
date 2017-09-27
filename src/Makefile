@@ -1,6 +1,6 @@
 CXX=g++
-CXXFLAGS=-std=c++14 -Wall -g -O2
-CXXINCLUDES=-I/home/biagio/repositories/OPT_Common/include
+CXXFLAGS=-std=c++14 -O3 -DNDEBUG
+CXXINCLUDES=
 EXE=opt_ic
 
 all: Abstract_optimization.o Create_object.o Fast_bisection_optimization.o Fast_optimization.o opt_ic.o Time_meas.o
