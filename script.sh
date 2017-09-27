@@ -83,6 +83,7 @@ if [ -f $FILE ]; then
 	#
 	# Copy the lua and csv files
 	#
+	cp ConfigApp_1.txt $LOCALDATA
 	cp $LUA_FILENAME $LUA
 	cp $CSV_FILES $LOCALDATA
 	if [ ! -f $LOCALDATA/ConfigApp_1.txt ]; then
@@ -110,7 +111,7 @@ if [ -f $FILE ]; then
 	# Launch OPT_IC
 	#
 	cd $OPT_IC_HOME
-	$OPT_IC_HOME/Res_opt app1.txt f > $OPT_IC_HOME/_out.txt
+	$OPT_IC_HOME/opt_ic app1.txt f > $OPT_IC_HOME/_out.txt
 	#
 	# Restore the original lua file
 	#
