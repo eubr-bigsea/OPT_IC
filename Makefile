@@ -1,6 +1,6 @@
 CXX=g++
 CXXFLAGS=-std=c++14 -Wall -g -O0
-CXXINCLUDES=-I/home/biagio/repositories/OPT_Common/include
+CXXINCLUDES=
 TARGET=opt_ic
 
 all: src
