@@ -1,3 +1,4 @@
+# Note that the deadline given in input and the deadline in CnfigAPp1.txt must be the same
 if [ "$#" -ne 3 ]; then
     echo "./script.sh <appId> <dataset> <deadline>"
     exit -1
@@ -81,9 +82,9 @@ if [ -f $FILE ]; then
 	LUA_FILENAME=$(ls *.lua)
 	CSV_FILES=$(ls *.csv)
 	#
-	# Copy the lua and csv files
+	# Copy the ConfigApp_1.txt lua and csv files
 	#
-	cp ConfigApp_1.txt $LOCALDATA
+	cp $OPT_IC_HOME/ConfigApp_1.txt $LOCALDATA
 	cp $LUA_FILENAME $LUA
 	cp $CSV_FILES $LOCALDATA
 	if [ ! -f $LOCALDATA/ConfigApp_1.txt ]; then
