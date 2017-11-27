@@ -44,7 +44,7 @@ opt_common::TimeInstant Abstract_optimization::evaluate_time(
     else
       os << line << std::endl;
   }
-
+  os.close();
   // we call Dagsim and send its output in the file result.txt, then we read and
   // return it
   system(dagsim_command.c_str());
@@ -56,5 +56,10 @@ opt_common::TimeInstant Abstract_optimization::evaluate_time(
   }
 
   is2 >> res;
+  if (res <= 0.0) {
+    std::cerr << "Error in dagsim result: result.txt" << std::endl;
+    std::cerr << "Dagsim command was: " << dagsim_command << std::endl;
+    exit(1);
+  }
   return res;
 }
